@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bt_ui"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="ui_thread_crash(只点击一次，App就异常退出了)"
+        android:onClick="uiThreadCrash"/>
+
+    <Button
+        android:id="@+id/bt_work"
+        app:layout_constraintTop_toBottomOf="@id/bt_ui"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="work_thread_crash(只能点击一次，所在线程就异常退出了，app不会退出，不过再次点击时业务功能可能就无法执行了)"
+        android:onClick="workThreadCrash"/>
+
+    <Button
+        android:id="@+id/bt_executor"
+        app:layout_constraintTop_toBottomOf="@id/bt_work"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="executor_thread_crash(线程池实现，可以重复点击，app不会退出)"
+        android:onClick="executorThreadCrash"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
