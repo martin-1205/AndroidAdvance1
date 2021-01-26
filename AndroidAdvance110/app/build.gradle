@@ -1,0 +1,151 @@
+plugins {
+    id 'com.android.application'
+}
+
+// file path is relative to project root dir
+def keystorePropertiesFile = rootProject.file("keystore/keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+    android {compileOptions.encoding="GBK"}
+
+    signingConfigs {
+        debug {
+            keyAlias keystoreProperties['DEBUG_KEYSTORE_ALIAS']
+            keyPassword keystoreProperties['DEBUG_KEYSTORE_ALIAS_PASSWORD']
+            storeFile file(keystoreProperties['DEBUG_KEYSTORE_FILE'])
+            storePassword keystoreProperties['DEBUG_KEYSTORE_PASSWORD']
+        }
+
+        release {
+            keyAlias keystoreProperties['RELEASE_KEYSTORE_ALIAS']
+            keyPassword keystoreProperties['RELEASE_KEYSTORE_ALIAS_PASSWORD']
+            storeFile file(keystoreProperties['RELEASE_KEYSTORE_FILE'])
+            storePassword keystoreProperties['RELEASE_KEYSTORE_PASSWORD']
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.martin.android.advance110"
+        minSdkVersion 25
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        flavorDimensions "channel", "customize"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable true
+            zipAlignEnabled false
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+        }
+
+        release {
+            debuggable false
+            jniDebuggable false
+            zipAlignEnabled false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        dataBinding=true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+        checkAllWarnings true
+        showAll true
+        htmlReport true
+        checkReleaseBuilds true
+        absolutePaths true
+        lintConfig file("lint.xml")
+    }
+
+    productFlavors {
+        channel_test {
+            dimension "channel"
+            //minSdkVersion 23
+            versionNameSuffix "-test"
+            applicationIdSuffix = ".test"
+            buildConfigField "String","channel",'"test"'
+            buildConfigField "String","serverUrl",'"http://localhost:8080/wpmonitor-web-test/"'
+        }
+
+        channel_dev {
+            dimension "channel"
+            versionNameSuffix "-dev"
+            applicationIdSuffix = ".dev"
+            buildConfigField "String","channel",'"dev"'
+            buildConfigField "String","serverUrl",'"http://localhost:8080/wpmonitor-web-dev/"'
+
+        }
+
+        channel_prod {
+            dimension "channel"
+            versionNameSuffix "-prod"
+            applicationIdSuffix = ".prod"
+            buildConfigField "String","channel",'"prod"'
+            buildConfigField "String","serverUrl",'"http://localhost:8080/wpmonitor-web-prod/"'
+        }
+
+        channel_customize {
+            dimension "customize"
+            versionNameSuffix "-customize"
+            applicationIdSuffix = ".customize"
+            buildConfigField "String","channel",'"customize"'
+            buildConfigField "String","serverUrl",'"http://localhost:8080/wpmonitor-web-prod/"'
+        }
+    }
+
+    /**
+     * The splits block is where you can configure different APK builds that
+     * each contain only code and resources for a supported screen density or
+     * ABI. You'll also need to configure your build so that each APK has a
+     * different versionCode.
+     */
+
+    splits {
+        // Settings to build multiple APKs based on screen density.
+        density {
+
+            // Enable or disable building multiple APKs.
+            enable false
+
+            // Exclude these densities when building multiple APKs.
+            exclude "ldpi", "tvdpi", "xxxhdpi", "400dpi", "560dpi"
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
